@@ -3,8 +3,20 @@ language: generic
 services:
   - docker
 
+# build images with file "Dockerfile.dev"
 before_install:
   - docker build -t gjuoun/travisci-playground:1.0 -f Dockerfile.dev .
 
+# run test
 script:
   - docker run -e CI=true gjuoun/travisci-playground:1.0 yarn test
+
+deploy:
+  provider: elasticbeanstalk
+  region: "us-west-1"
+  app: "docker-react-jun"
+  env: "DockerReactJun-env"
+  bucket_name: "elasticbeanstalk-us-west-1-618205124857"
+  bucket_path: "docker-react-jun"
+  on:
+    branch: master
